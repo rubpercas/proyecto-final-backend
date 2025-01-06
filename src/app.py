@@ -8,7 +8,11 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models.User.user_model import db, Usuario
+from models import Ingrediente, Receta, RecetaFavorita, receta_ingredientes
+from routes import user_bp, recipe_bp, ingredient_bp, recipe_favorite_bp
+from flask_jwt_extended import JWTManager
+from datetime import timedelta
 #from models import Person
 
 app = Flask(__name__)
@@ -21,10 +25,20 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+app.register_blueprint(user_bp, url_prefix="/user")
+app.register_blueprint(recipe_bp, url_prefix='/recipe')
+app.register_blueprint(ingredient_bp, url_prefix='/ingredient')
+app.register_blueprint(recipe_favorite_bp, url_prefix='/recipe_favorite')
+
 MIGRATE = Migrate(app, db)
 db.init_app(app)
 CORS(app)
 setup_admin(app)
+flask = JWTManager(app)
+
+jwt_key = os.getenv("JWT_KEY")
+app.config["SECRET_KEY"] = jwt_key
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=2)
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
@@ -36,14 +50,6 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
-
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
-
-    return jsonify(response_body), 200
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
