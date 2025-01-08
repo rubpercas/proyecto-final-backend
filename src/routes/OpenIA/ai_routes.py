@@ -1,31 +1,37 @@
 import os
 from flask import Blueprint, jsonify, request
+from openai import OpenAI
 import openai
-from dotenv import load_dotenv
-
-# Cargar variables de entorno
-load_dotenv()
 
 
-#  Configurar la API de OpenAI
-openai.api_key = os.getenv('OPENAI_API_KEY')
-#  Cargar variables de entorno
-load_dotenv()
-
-
-
+client = OpenAI()
 ai_bp = Blueprint('ai_bp', __name__)             
 
 # 📌 Generar una receta usando IA
 @ai_bp.route('/generate', methods=['POST'])
 def generate_recipe():
-    data = request.get_json()
-    prompt = data.get('prompt')
-    
-    if not prompt:
-        return jsonify({"error": "El campo 'prompt' es obligatorio"}), 400
-    
     try:
+        data = request.get_json()
+        prompt = data.get("prompt", "")
+
+        if not prompt:
+            return jsonify({"error": "No se proporcionó un prompt"}), 400
+
+    #   Prueba para no gastar tokens.
+    #     return jsonify({
+    #     "recipe": (
+    #         f"Receta generada para los ingredientes: {prompt}\n"
+    #         "1. Mezclar los ingredientes.\n"
+    #         "2. Cocinar a fuego medio por 20 minutos.\n"
+    #         "3. Servir y disfrutar."
+    #     )
+    # }), 200
+    
+    # Me daba problema el davinci porque está deprecated, así que usamos el modelo gpt-3.5-turbo
+    # Temperature es el estilo de respuesta entre 0 y 1. 0 más predecible, 1 más creativa.
+    # max_tokens define el límite máximo de tokens (unidad de texto) que el modelo puede generar en la respuesta.
+    # Cada solicitud cuenta con los tokens del prompt y de la respuesta. El modelo (450TK) y el
+    # prompt (ej. 50 TK), el coste será de 500 tokens.
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",  
             messages=[
@@ -59,3 +65,8 @@ def generate_recipe():
         print("Error en el backend:", str(e))
         return jsonify({"error": "Hubo un problema generando la receta"}), 500
 
+
+# this only runs if `$ python src/main.py` is executed
+if __name__ == '__main__':
+    PORT = int(os.environ.get('PORT', 3001))
+    app.run(host='0.0.0.0', port=PORT, debug=True)

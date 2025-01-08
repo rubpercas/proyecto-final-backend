@@ -13,11 +13,20 @@ from datetime import timedelta
 from openai import OpenAI
 
 
+from dotenv import load_dotenv
+import openai
 
+# Cargar variables de entorno
+load_dotenv()
+
+# Configurar la API de OpenAI
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 #  Configuración de la Aplicación Flask
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
 
 #  Configurar Base de Datos
 db_url = os.getenv("DATABASE_URL")
@@ -44,7 +53,7 @@ app.register_blueprint(ai_bp, url_prefix='/ai')
 #  Inicializar Extensiones
 MIGRATE = Migrate(app, db)
 db.init_app(app)
-CORS(app)
+CORS(app, resources={r"/ai/*": {"origins": "*"}})
 setup_admin(app)
 
 #  Manejador de errores
