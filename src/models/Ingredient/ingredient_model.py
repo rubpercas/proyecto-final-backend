@@ -12,3 +12,12 @@ class Ingrediente(db.Model):
         secondary=receta_ingredientes,
         back_populates='ingredientes'
     )
+
+    def __repr__(self):
+        return f'<Ingrediente {self.nombre}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "nombre": self.nombre
+        }

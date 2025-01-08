@@ -7,7 +7,7 @@ class Receta(db.Model):
     __tablename__ = 'recetas'
 
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)  # ¡IMPORTANTE!
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     titulo = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.Text)
     pasos = db.Column(db.Text)
@@ -17,6 +17,9 @@ class Receta(db.Model):
     tiempo_elaboracion = db.Column(db.String(50))
     fecha_creacion = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     fecha_actualizacion = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    popularidad = db.Column(db.Integer, default=0)  
+    visibilidad = db.Column(db.String(10), default='publica')  # 'publica' o 'privada'
+    origen = db.Column(db.String(50), default='usuario')  # 'usuario' o 'ia'
 
     autor = relationship('Usuario', back_populates='recetas')
     ingredientes = relationship('Ingrediente', secondary=receta_ingredientes, back_populates='recetas')
@@ -27,7 +30,7 @@ class Receta(db.Model):
 
     def serialize(self):
         return {
-"id": self.id,
+            "id": self.id,
             "usuario_id": self.usuario_id,
             "titulo": self.titulo,
             "descripcion": self.descripcion,
@@ -38,5 +41,7 @@ class Receta(db.Model):
             "tiempo_elaboracion": self.tiempo_elaboracion,
             "fecha_creacion": self.fecha_creacion.isoformat() if self.fecha_creacion else None,
             "fecha_actualizacion": self.fecha_actualizacion.isoformat() if self.fecha_actualizacion else None,
-            # do not serialize the password, its a security breach
+            "popularidad": self.popularidad,
+            "visibilidad": self.visibilidad,
+            "origen": self.origen
         }

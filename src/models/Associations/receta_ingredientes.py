@@ -1,10 +1,9 @@
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from .. import db
 
-# Tabla intermedia para la relación muchos a muchos entre Recetas e Ingredientes
-receta_ingredientes = Table(
+receta_ingredientes = db.Table(
     'receta_ingredientes',
-    db.metadata,
-    Column('receta_id', Integer, ForeignKey('recetas.id'), primary_key=True),
-    Column('ingrediente_id', Integer, ForeignKey('ingredientes.id'), primary_key=True)
+    db.Column('receta_id', db.Integer, db.ForeignKey('recetas.id', ondelete='CASCADE'), primary_key=True),
+    db.Column('ingrediente_id', db.Integer, db.ForeignKey('ingredientes.id', ondelete='CASCADE'), primary_key=True),
+    db.Column('cantidad', db.String(50), nullable=True)  # Cantidad específica del ingrediente
 )
