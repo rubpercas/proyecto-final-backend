@@ -2,9 +2,11 @@ import os
 from flask import Blueprint, jsonify, request
 from openai import OpenAI
 import openai
-
-
+from dotenv import load_dotenv
+load_dotenv()
 client = OpenAI()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 ai_bp = Blueprint('ai_bp', __name__)             
 
 # 📌 Generar una receta usando IA
@@ -65,8 +67,3 @@ def generate_recipe():
         print("Error en el backend:", str(e))
         return jsonify({"error": "Hubo un problema generando la receta"}), 500
 
-
-# this only runs if `$ python src/main.py` is executed
-if __name__ == '__main__':
-    PORT = int(os.environ.get('PORT', 3001))
-    app.run(host='0.0.0.0', port=PORT, debug=True)
