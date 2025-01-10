@@ -3,9 +3,43 @@ from models.Recipe.recipe_model import Receta
 from models.RecipeFavorite.recipe_favorite_model import RecetaFavorita
 from models import db
 from sqlalchemy import func
-import openai
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 recipe_bp = Blueprint('recipe_bp', __name__)
+
+@recipe_bp.route('/save', methods=['POST'])
+@jwt_required()
+def save_recipe():
+    # Obtener los datos del cuerpo de la solicitud
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    print(data)
+    try:
+        # Verificar que los datos esenciales estén presentes
+        if not all(key in data for key in ['titulo', 'descripcion', 'pasos', 'calorias', 'nutrientes', 'tiempo_elaboracion']):
+            return jsonify({"error": "Faltan datos obligatorios"}), 400
+
+        # Crear una nueva receta
+        receta = Receta(
+            usuario_id=user_id,
+            titulo=data['titulo'],
+            descripcion=data['descripcion'],
+            pasos=data['pasos'],
+            calorias=data['calorias'],
+            nutrientes=data['nutrientes'],
+            tiempo_elaboracion=data['tiempo_elaboracion'],
+            origen='ia',  
+        )
+
+        # Agregar la receta a la base de datos
+        db.session.add(receta)
+        db.session.commit()
+
+        return jsonify({"message": "Receta guardada con éxito", "receta": receta.serialize()}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
 # 📌 Obtener las recetas más populares
 @recipe_bp.route('/popular', methods=['GET'])
