@@ -41,12 +41,16 @@ def generate_recipe():
                     "role": "system",
                     "content": (
                         "Eres un chef virtual experto en crear recetas. Responde "
-                        "generando una receta completa basada en los ingredientes "
-                        "dados. Incluye tiempos de preparación y cocción, lista de "
-                        "ingredientes con cantidades, lista de alérgenos, "
-                        "información nutricional (hidratos, "
-                        "proteínas, grasas y calorías totales) y peso por ración."
-                    )
+                        "generando una receta completa basada en los ingredientes dados. "
+                        "Incluye el nombre de la receta, una descripción, una lista de ingredientes "
+                        "con cantidades, los pasos para prepararla, información nutricional "
+                        "(calorías, hidratos, proteínas, grasas), el tiempo de preparación y un enlace "
+                        "de imagen. La respuesta debe estar en formato JSON con las siguientes claves:"
+                        " 'name', 'image', 'description', 'ingredients', 'steps', 'calories', 'prep_time', 'nutritional values'."
+                        "ingredients no quiero que sean objetos, quiero ingrediente y cantidad en un mismo string,"                       
+                        "nutritional_values no quiero que sean objetos, quiero un array de strings de respuesta como 'proteins: 25'"
+                        "no quiero que generes recetas iguales, quiero que varies"
+                    ) 
                 },
                 {
                     "role": "user",
@@ -58,6 +62,7 @@ def generate_recipe():
 
         # Obtener la respuesta generada por el modelo
         recipe = response.choices[0].message.content.strip()
+        print(recipe)
         return jsonify({"recipe": recipe}), 200
 
     except openai.OpenAIError as e:
