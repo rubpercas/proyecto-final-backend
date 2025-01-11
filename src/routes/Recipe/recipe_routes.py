@@ -30,7 +30,6 @@ def save_recipe():
             origen='ia',  
         )
 
-        # Agregar la receta a la base de datos
         db.session.add(receta)
         db.session.commit()
 
@@ -39,8 +38,31 @@ def save_recipe():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+    
+@recipe_bp.route('/saved', methods=['GET'])
+@jwt_required()
+def get_saved_recipes():
+    #el siguiente user ID deberia ser get_jwt_identity()
+    user_id = 1
+    try:
+        recetas = Receta.query.filter_by(usuario_id=user_id).all()
+        print(recetas)
+        return jsonify([receta.serialize() for receta in recetas]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-# 📌 Obtener las recetas más populares
+@recipe_bp.route('/<int:recipe_id>', methods=['GET'])
+@jwt_required()
+def get_recipe(recipe_id):
+    try:
+        receta = Receta.query.get(recipe_id)
+        if not receta:
+            return jsonify({"error": "Receta no encontrada"}), 404
+        return jsonify(receta.serialize()), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @recipe_bp.route('/popular', methods=['GET'])
 def get_popular_recipes():
     popular_recipes = db.session.query(
@@ -59,7 +81,6 @@ def get_popular_recipes():
     return jsonify(response), 200
 
 
-# 📌 Cambiar visibilidad de una receta (pública/privada)
 @recipe_bp.route('/<int:id>/visibility', methods=['PUT'])
 def update_recipe_visibility(id):
     data = request.json
