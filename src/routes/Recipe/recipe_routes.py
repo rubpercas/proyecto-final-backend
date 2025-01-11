@@ -9,21 +9,20 @@ recipe_bp = Blueprint('recipe_bp', __name__)
 
 @recipe_bp.route('/save', methods=['POST'])
 @jwt_required()
-def save_recipe():
-    # Obtener los datos del cuerpo de la solicitud
+def save_recipe():    
     data = request.get_json()
+    print("Datos recibidos:", data) 
     user_id = get_jwt_identity()
-    print(data)
+    print(user_id)
     try:
-        # Verificar que los datos esenciales estén presentes
         if not all(key in data for key in ['titulo', 'descripcion', 'pasos', 'calorias', 'nutrientes', 'tiempo_elaboracion']):
             return jsonify({"error": "Faltan datos obligatorios"}), 400
 
-        # Crear una nueva receta
         receta = Receta(
             usuario_id=user_id,
             titulo=data['titulo'],
             descripcion=data['descripcion'],
+            ingredients=data['ingredients'],
             pasos=data['pasos'],
             calorias=data['calorias'],
             nutrientes=data['nutrientes'],

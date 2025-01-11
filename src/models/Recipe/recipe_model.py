@@ -11,6 +11,7 @@ class Receta(db.Model):
     titulo = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.Text, nullable=False)
     pasos = db.Column(db.Text, nullable=False)
+    ingredients = db.Column(db.String(200), nullable=True)
     foto_url = db.Column(db.String(255), nullable=True)  # Aseguramos que puede ser nula
     calorias = db.Column(db.Integer, nullable=True)  # Puede ser opcional
     nutrientes = db.Column(db.Text, nullable=True)  # Puede ser opcional
