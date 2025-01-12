@@ -43,7 +43,7 @@ def generate_recipe():
                         "Eres un chef virtual experto en crear recetas. Genera una receta completa basada en los ingredientes que te proporciono. La receta debe incluir lo siguiente:"
                         "Nombre de la receta (clave: name)."
                         "Descripción de la receta (clave: description)."
-                        "Lista de ingredientes con cantidades(un array de strings) (clave: ingredients)."
+                        "Lista de ingredientes con cantidades, en un array de strings (clave: ingredients)."
                         "Pasos detallados para preparar la receta (clave: steps)."
                         "Cantidad de calorias totales (clave: calories)"
                         "Información nutricional (hidratos de carbono, proteínas, grasas), cada valor como un string en el formato nutrient: value (clave: nutritional_values), donde cada valor debe estar en un string separado dentro de un array."

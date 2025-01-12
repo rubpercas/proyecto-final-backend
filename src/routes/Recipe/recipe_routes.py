@@ -15,7 +15,7 @@ def save_recipe():
     user_id = get_jwt_identity()
     print(user_id)
     try:
-        if not all(key in data for key in ['titulo', 'descripcion', 'pasos', 'calorias', 'nutrientes', 'tiempo_elaboracion']):
+        if not all(key in data for key in ['titulo', 'descripcion', 'pasos', 'calorias', 'nutrientes', 'tiempo_elaboracion', 'ingredients']):
             return jsonify({"error": "Faltan datos obligatorios"}), 400
 
         receta = Receta(
@@ -29,7 +29,7 @@ def save_recipe():
             tiempo_elaboracion=data['tiempo_elaboracion'],
             origen='ia',  
         )
-
+        print(receta)
         db.session.add(receta)
         db.session.commit()
 
@@ -43,7 +43,7 @@ def save_recipe():
 @jwt_required()
 def get_saved_recipes():
     #el siguiente user ID deberia ser get_jwt_identity()
-    user_id = 1
+    user_id = get_jwt_identity()
     try:
         recetas = Receta.query.filter_by(usuario_id=user_id).all()
         print(recetas)
@@ -79,7 +79,6 @@ def get_popular_recipes():
         for r in popular_recipes
     ]
     return jsonify(response), 200
-
 
 @recipe_bp.route('/<int:id>/visibility', methods=['PUT'])
 def update_recipe_visibility(id):
