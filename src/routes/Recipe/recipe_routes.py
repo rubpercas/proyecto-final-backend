@@ -61,6 +61,16 @@ def get_recipe(recipe_id):
         return jsonify(receta.serialize()), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@recipe_bp.route('/<int:recipe_id>', methods=['DELETE'])
+@jwt_required()
+def delete_recipe(recipe_id):
+    recipe = Receta.query.get(recipe_id)
+    if not recipe:
+        return jsonify({"error": "Receta no encontrada"}), 404
+    db.session.delete(recipe)
+    db.session.commit()
+    return jsonify({"message": "Receta eliminada"}), 200
 
 
 @recipe_bp.route('/popular', methods=['GET'])
