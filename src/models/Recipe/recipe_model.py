@@ -9,17 +9,18 @@ class Receta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     titulo = db.Column(db.String(100), nullable=False)
-    descripcion = db.Column(db.Text)
-    pasos = db.Column(db.Text)
-    foto_url = db.Column(db.String(255))
-    calorias = db.Column(db.Integer)
-    nutrientes = db.Column(db.Text)
-    tiempo_elaboracion = db.Column(db.String(50))
+    descripcion = db.Column(db.Text, nullable=False)
+    pasos = db.Column(db.Text, nullable=False)
+    ingredients = db.Column(db.Text, nullable=False)
+    foto_url = db.Column(db.String(255), nullable=True)  # Aseguramos que puede ser nula
+    calorias = db.Column(db.Integer, nullable=True)  # Puede ser opcional
+    nutrientes = db.Column(db.Text, nullable=True)  # Puede ser opcional
+    tiempo_elaboracion = db.Column(db.String(50), nullable=True)  # Puede ser opcional
     fecha_creacion = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     fecha_actualizacion = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
-    popularidad = db.Column(db.Integer, default=0)  
+    popularidad = db.Column(db.Integer, default=0)  # Puede ser opcional
     visibilidad = db.Column(db.String(10), default='publica')  # 'publica' o 'privada'
-    origen = db.Column(db.String(50), default='usuario')  # 'usuario' o 'ia'
+    origen = db.Column(db.String(50), default='ia')  # Asignar el origen como IA por defecto
 
     autor = relationship('Usuario', back_populates='recetas')
     ingredientes = relationship('Ingrediente', secondary=receta_ingredientes, back_populates='recetas')
@@ -34,6 +35,7 @@ class Receta(db.Model):
             "usuario_id": self.usuario_id,
             "titulo": self.titulo,
             "descripcion": self.descripcion,
+            "ingredients": self.ingredients,
             "pasos": self.pasos,
             "foto_url": self.foto_url,
             "calorias": self.calorias,
