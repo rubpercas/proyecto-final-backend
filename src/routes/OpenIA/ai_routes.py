@@ -48,7 +48,7 @@ def generate_recipe():
                         "Cantidad de calorias totales (clave: calories)"
                         "Información nutricional (hidratos de carbono, proteínas, grasas), cada valor como un string en el formato nutrient: value (clave: nutritional_values), donde cada valor debe estar en un string separado dentro de un array."
                         "Tiempo de preparación (clave: prep_time)."
-                        "Enlace a una imagen representativa de la receta en pixabay (clave: image)."
+                        "Enlace a una imagen representativa, pero que el enlace funcione (clave: image)."
                         "La respuesta debe estar en formato JSON con las siguientes claves: name, image, description, ingredients, steps, calories, prep_time, y nutritional_values. Los ingredientes deben estar en formato de texto, no como objetos, y los valores nutricionales deben ser un array de strings en lugar de objetos. Además, asegúrate de variar las recetas generadas para que no se repitan."
                     ) 
                 },
