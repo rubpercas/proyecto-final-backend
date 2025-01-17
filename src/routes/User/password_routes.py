@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, current_app
-from models import Usuario, db
+from models.User.user_model import Usuario, db
 from flask_mail import Message
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
@@ -57,36 +57,28 @@ def request_reset_password():
         return jsonify({"error": "Error al enviar el correo de recuperación"}), 500
 
 
-#  Ruta para restablecer la contraseña usando el token
+# Ruta para restablecer la contraseña usando el token
 @password_bp.route('/reset-password', methods=["POST"])
 @jwt_required()
 def reset_password():
-    try:
-        user_data = request.get_json()
-        email = get_jwt_identity()
+    user_data = request.get_json()
+    email = get_jwt_identity()  #  Obtenemos el email del token
 
-        new_password = user_data.get('password')
-        confirm_password = user_data.get('confirm_password')
-
-        # Validar los campos
-        if not new_password or not confirm_password:
-            return jsonify({"error": "Ambos campos de contraseña son obligatorios."}), 400
-
-        if new_password != confirm_password:
-            return jsonify({"error": "Las contraseñas no coinciden."}), 400
-
-        # Buscar al usuario
+    if user_data['password'] == user_data['confirm_password']:
+        # Buscar al usuario en la base de datos
         user = Usuario.query.filter_by(email=email).first()
+        
         if not user:
             return jsonify({"error": "Usuario no encontrado."}), 404
 
         # Hashear la nueva contraseña
-        hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+        hashed_password = bcrypt.generate_password_hash(user_data['password']).decode('utf-8')
+        
+        # Actualizar la contraseña en la base de datos
         user.password = hashed_password
         db.session.commit()
 
         return jsonify({"message": "Contraseña actualizada correctamente."}), 200
 
-    except Exception as e:
-        print(f"Error al restablecer la contraseña: {e}")
-        return jsonify({"error": "Error al restablecer la contraseña."}), 500
+    return jsonify({"error": "Las contraseñas no coinciden."}), 400
+  
