@@ -11,17 +11,7 @@ from routes import user_bp, recipe_bp, ingredient_bp, favorite_bp, ai_bp
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from openai import OpenAI
-
-
-
 import openai
-
-# Cargar variables de entorno
-
-
-# Configurar la API de OpenAI
-
-
 
 #  Configuración de la Aplicación Flask
 app = Flask(__name__)
