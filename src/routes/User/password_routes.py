@@ -11,6 +11,7 @@ password_bp = Blueprint('password_bp', __name__)
 bcrypt = Bcrypt()
 mail = Mail()
 
+
 # Ruta para solicitar el restablecimiento de contraseña
 @password_bp.route('/request-reset-password', methods=["POST"])
 def request_reset_password():
