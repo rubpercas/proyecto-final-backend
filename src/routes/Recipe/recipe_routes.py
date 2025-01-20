@@ -24,6 +24,7 @@ def save_recipe():
             descripcion=data['descripcion'],
             ingredients=data['ingredients'],
             pasos=data['pasos'],
+            foto_url=data['foto_url'],
             calorias=data['calorias'],
             nutrientes=data['nutrientes'],
             tiempo_elaboracion=data['tiempo_elaboracion'],
