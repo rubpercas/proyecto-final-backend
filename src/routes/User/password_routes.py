@@ -55,7 +55,7 @@ def request_reset_password():
 
 
 # Ruta para restablecer la contraseña usando el token
-@password_bp.route('/reset-password', methods=["POST"])
+@password_bp.route('/reset-password', methods=["PUT"])
 @jwt_required()
 def reset_password():
     user_data = request.get_json()
