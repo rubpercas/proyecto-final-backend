@@ -5,6 +5,9 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from datetime import timedelta
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from flask import render_template
 
 
 
@@ -36,18 +39,16 @@ def request_reset_password():
         # Enlace para restablecer la contraseña
         reset_link = f"https://jubilant-waddle-jj4q4x5p6jpv2w6-5173.app.github.dev/reset-password/{token}"
 
+        html_body = render_template('reset_password_email.html', reset_link=reset_link)
+
         # Enviar correo
         msg = Message(
             'Restablece tu contraseña',
             sender=current_app.config["MAIL_USERNAME"],
             recipients=[email]
         )
-        msg.html = f"""
-        <p>Hola,</p>
-        <p>Para restablecer tu contraseña, haz clic en el siguiente enlace:</p>
-        <a href="{reset_link}">Restablecer contraseña</a>
-        <p>Este enlace expirará en 5 minutos.</p>
-        """
+        msg.html = html_body
+
         mail.send(msg)
 
         return jsonify({"message": "Se ha enviado un correo para recuperar tu contraseña"}), 200
