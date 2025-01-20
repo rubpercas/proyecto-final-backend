@@ -34,7 +34,7 @@ def request_reset_password():
         token = create_access_token(identity=email, expires_delta=timedelta(minutes=5))
 
         # Enlace para restablecer la contraseña
-        reset_link = f"https://jubilant-waddle-jj4q4x5p6jpv2w6-5173.app.github.dev/reset-password/{token}"
+        reset_link = f"https://flask-rest-hello-2pl3.onrender.com/reset-password/{token}"
 
         html_body = render_template('reset_password_email.html', reset_link=reset_link)
 
