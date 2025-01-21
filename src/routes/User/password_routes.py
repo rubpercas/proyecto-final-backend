@@ -34,7 +34,7 @@ def request_reset_password():
         token = create_access_token(identity=email, expires_delta=timedelta(minutes=5))
 
         # Enlace para restablecer la contraseña
-        reset_link = f"https://flask-rest-hello-2pl3.onrender.com/reset-password/{token}"
+        reset_link = f"https://proyecto-final-frontend-app.vercel.app/password/reset-password/{token}"
 
         html_body = render_template('reset_password_email.html', reset_link=reset_link)
 
@@ -56,7 +56,7 @@ def request_reset_password():
 
 
 # Ruta para restablecer la contraseña usando el token
-@password_bp.route('/reset-password', methods=["PUT"])
+@password_bp.route('/reset-password', methods=["PUT", "GET"])
 @jwt_required()
 def reset_password():
     user_data = request.get_json()
