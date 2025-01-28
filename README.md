@@ -23,7 +23,7 @@ This repository contains the backend API for a Recipe Generation application bui
 ## Frontend repository
 
 The frontend for this project is available at the following link:
-<a href="[https://www.breatheco.de](https://github.com/4GeeksAcademy/proyecto-final-frontend-app)">FRONTEND REPOSITORY</a>
+<a href="https://github.com/rubpercas/proyecto-final-frontend-app">FRONTEND REPOSITORY</a>
 
 ## License
 
