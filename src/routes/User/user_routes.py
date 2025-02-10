@@ -18,8 +18,13 @@ def get_users():
 @user_bp.route('/create', methods=['POST'])
 def create_user():
     user_data = request.get_json()
-    new_user = Usuario(**user_data)
-    new_user.password = bcrypt.generate_password_hash(new_user.password).decode('utf-8')
+    new_user = Usuario(
+        nombre=user_data.get("nombre"),  # Si no viene en el JSON, será None
+        apellidos=user_data.get("apellidos"),  # Si no viene en el JSON, será None
+        nombre_usuario=user_data.get("nombre_usuario"),  # Si no viene en el JSON, será None
+        email=user_data["email"],  # Obligatorio, si falta lanzará un error
+        password=bcrypt.generate_password_hash(user_data["password"]).decode('utf-8')
+    )
     db.session.add(new_user)
     db.session.commit()
     access_token = create_access_token(identity=str(new_user.id))
