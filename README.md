@@ -25,6 +25,3 @@ This repository contains the backend API for a Recipe Generation application bui
 The frontend for this project is available at the following link:
 <a href="https://github.com/rubpercas/proyecto-final-frontend-app">FRONTEND REPOSITORY</a>
 
-## License
-
-This project is licensed under the MIT License.
